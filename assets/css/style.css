@@ -4,7 +4,7 @@ body {
 
 
 
-h1, #quiz, #start, #quizBox {
+h1, #start, #quizBox {
     border: 3px solid green;
     font-size: 20px;
     text-align: center;
@@ -16,4 +16,5 @@ h1, #quiz, #start, #quizBox {
 
 h1 {
     font-size: 50px;
+    background: yellow;
 }

@@ -1,12 +1,12 @@
-var rightAnswer;
-var wrongAnswer;
-var unAnswered; 
+var rightAnswer = 0;
+var wrongAnswer = 0;
+var unAnswered;
 var timer = 120;
 var answers = ["D", "C", "D", "D", "C", "B", "B", "B"];
 
 //create quiz questions and answers and get ID and input questions in HTML
 
-function quiz(){
+function quiz() {
     $("#question0").append("<h2> Where was the 1984 Olympics held at? <h2>");
     $("#question0").append("<input type='radio' name='question0' value='A'>Tokyo <input type='radio' name='question0' value='B'>Rio <input type ='radio' name='question0' value='C'>Paris <input type='radio' name='question0' value='D'>Los Angeles");
 
@@ -30,14 +30,16 @@ function quiz(){
 
     $("#question7").append("<h2> What year did the US declare independence from England? <h2>");
     $("#question7").append("<input type='radio' name='question7' value='A'>1886 <input type='radio' name='question7' value='B'>1776 <input type ='radio' name='question7' value='C'>1766 <input type='radio' name='question7' value='D'>1890");
+
+    $("#done").append("<button> Done </button>")
 };
 
-function counter () {
+function counter() {
     timer--;
-    $("#timer").html("<h2>"+timer+"<h2>");
-    if(timer <= 0){
-        alert("YOU ARE THE WORST!!");
-        done();
+    $("#timer").html("<h2>" + timer + "<h2>");
+    if (timer <= 0) {
+        console.log("YOU ARE THE WORST!!");
+        checkAnswer();
     }
 }
 
@@ -48,19 +50,89 @@ function start() {
     quiz();
 }
 
-// function done() {
-//     if()
-// }
+
+//HOW CAN I GET THE checked value of question 0 and compare it with the answer in the array??? 
+function checkAnswer() {
+//I SWEAR I had this working .... WTF....................................
+    var answerChoice0 = $("input[name='question0']:checked").val();
+    console.log(answerChoice0);
+    if (answerChoice0 == answers[0]) {
+        rightAnswer++;
+    } else {
+        wrongAnswer++;
+    };
+    console.log(answerChoice0);
+    console.log(answers[0]);
+
+    var answerChoice1 = $("input[name='question1']:checked").val();
+    if(answerChoice1 == answers[1]) {
+        rightAnswer++;
+    } else {
+        wrongAnswer++;
+    };
+
+    var answerChoice2 = $("input[name='question2']:checked").val();
+    if(answerChoice2 == answers[2]) {
+        rightAnswer++;
+    } else {
+        wrongAnswer++;
+    };
+
+    var answerChoice3 = $("input[name='question3']:checked").val();
+    if(answerChoice3 == answers[3]) {
+        rightAnswer++;
+    } else {
+        wrongAnswer++;
+    };
+
+    var answerChoice4 = $("input[name='question4']:checked").val();
+    if(answerChoice4 == answers[4]) {
+        rightAnswer++;
+    } else {
+        wrongAnswer++;
+    };
+
+    var answerChoice5 = $("input[name='question5']:checked").val();
+    if(answerChoice5 == answers[5]) {
+        rightAnswer++;
+    } else {
+        wrongAnswer++;
+    };
+
+    var answerChoice6 = $("input[name='question6']:checked").val();
+    if(answerChoice6 == answers[6]) {
+        rightAnswer++;
+    } else {
+        wrongAnswer++;
+    };
+
+    var answerChoice7 = $("input[name='question7']:checked").val();
+    if(answerChoice7 == answers[7]) {
+        rightAnswer++;
+    } else {
+        wrongAnswer++;
+    };
+}
+
+function done() {
+    $("button").on("click", function () {
+        clearInterval(time);
+        $("#quizBox").html("<h2> Correct : " + rightAnswer + "</h2>");
+        $("#quizBox").append("<h2> Incorrect : " + wrongAnswer + "</h2>");
+    })
+}
+
+
 
 
 
 
 
 //Main Process- click start and set functions to run in order 
-$("#start").on("click", function(){
-    
-    start();
+$("#start").on("click", function () {
 
+    start();
+    checkAnswer();
     done();
 
 });
