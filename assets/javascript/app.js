@@ -1,138 +1,186 @@
-var rightAnswer = 0;
-var wrongAnswer = 0;
-var unAnswered;
-var timer = 120;
-var answers = ["D", "C", "D", "D", "C", "B", "B", "B"];
 
-//create quiz questions and answers and get ID and input questions in HTML
+var panel = $("#quiz-area");
+var countStartNumber = 30;
 
-function quiz() {
-    $("#question0").append("<h2> Where was the 1984 Olympics held at? <h2>");
-    $("#question0").append("<input type='radio' name='question0' value='A'>Tokyo <input type='radio' name='question0' value='B'>Rio <input type ='radio' name='question0' value='C'>Paris <input type='radio' name='question0' value='D'>Los Angeles");
+// Question set
+var questions = [{
+  question: "With what country is France's longest land border?",
+  answers: ["USA", "Brazil", "Mexico", "Netherlands"],
+  correctAnswer: "Brazil",
+  image: "assets/images/Frenchborder.jpg"
+}, {
+  question: "Where is the world's largest desert?",
+  answers: ["Sahara", "Gobi", "Patagonia", "Antarctica"],
+  correctAnswer: "Antarctica",
+  image: "assets/images/largestdesert.jpg"
+}, {
+  question: "What is Paul McCartney's middle name?",
+  answers: ["James", "John", "Paul", "Daniel"],
+  correctAnswer: "Paul",
+  image: "assets/images/paulmccartney.gif"
+}, {
+  question: "What company is the world's biggest distributer of toys?",
+  answers: ["Hasbro", "Disney", "McDonalds", "Toys-R-Us"],
+  correctAnswer: "McDonalds",
+  image: "assets/images/happyMeal.gif"
+}, {
+  question: "What is the official language of the United States?",
+  answers: ["None", "Spanish", "French", "English"],
+  correctAnswer: "None",
+  image: "assets/images/nolanguage.gif"
+}, {
+  question: "Where was the 1984 Olympics held at? ",
+  answers: ["London", "Pyong Yang", "Los Angeles", "Venice"],
+  correctAnswer: "Los Angeles",
+  image: "assets/images/laOlympics.jpg"
+}, {
+  question: " What year did the US declare independence from England?",
+  answers: ["1996", "1775", "1776", "1796"],
+  correctAnswer: "1776",
+  image: "assets/images/1776.gif"
+}, {
+  question: "Name of Artist who sang Gangsters' Paradise?",
+  answers: ["Jay-z", "2Pac", "Nas", "Coolio"],
+  correctAnswer: "Coolio",
+  image: "assets/images/coolio.gif"
+}];
 
-    $("#question1").append("<h2> What year did man land on the moon?? <h2>");
-    $("#question1").append("<input type='radio' name='question1' value='A'>1990 <input type='radio' name='question1' value='B'>Never <input type ='radio' name='question1' value='C'>1969 <input type='radio' name='question1' value='D'>1880");
+// Variable to hold our setInterval
+var timer;
 
-    $("#question2").append("<h2> What year did WWII end on? <h2>");
-    $("#question2").append("<input type='radio' name='question2' value='A'>1990 <input type='radio' name='question2' value='B'>1935 <input type ='radio' name='question2' value='C'> 1942 <input type='radio' name='question2' value='D'>1945");
+var game = {
 
-    $("#question3").append("<h2> What is the Capital of Zimbabwe? <h2>");
-    $("#question3").append("<input type='radio' name='question3' value='A'>Hooyee <input type='radio' name='question3' value='B'>Zim City <input type ='radio' name='question3' value='C'>Hubabe <input type='radio' name='question3' value='D'>Harare");
+  questions: questions,
+  currentQuestion: 0,
+  counter: countStartNumber,
+  correct: 0,
+  incorrect: 0,
 
-    $("#question4").append("<h2> What along with heart disease and cancer accounts for 64% of deaths in US? <h2>");
-    $("#question4").append("<input type='radio' name='question4' value='A'>Stroke <input type='radio' name='question4' value='B'>Arthritis <input type ='radio' name='question4' value='C'>Diabetes <input type='radio' name='question4' value='D'>kidney stones");
+  countdown: function() {
+    game.counter--;
+    $("#counter-number").text(game.counter);
+    if (game.counter === 0) {
+      console.log("TIME UP");
+      game.timeUp();
+    }
+  },
 
-    $("#question5").append("<h2> What is most malleable metal? <h2>");
-    $("#question5").append("<input type='radio' name='question5' value='A'>Silver <input type='radio' name='question5' value='B'>Gold <input type ='radio' name='question5' value='C'>Aluminum <input type='radio' name='question5' value='D'>Mercury");
+  loadQuestion: function() {
 
-    $("#question6").append("<h2> How many planets are in the solar system? <h2>");
-    $("#question6").append("<input type='radio' name='question6' value='A'>9 <input type='radio' name='question6' value='B'>8 <input type ='radio' name='question6' value='C'>6 <input type='radio' name='question6' value='D'>4");
+    timer = setInterval(game.countdown, 1000);
 
-    $("#question7").append("<h2> What year did the US declare independence from England? <h2>");
-    $("#question7").append("<input type='radio' name='question7' value='A'>1886 <input type='radio' name='question7' value='B'>1776 <input type ='radio' name='question7' value='C'>1766 <input type='radio' name='question7' value='D'>1890");
+    panel.html("<h2 class='currentQuestion'>" + questions[this.currentQuestion].question + "</h2>");
 
-    $("#done").append("<button> Done </button>")
+    for (var i = 0; i < questions[this.currentQuestion].answers.length; i++) {
+      panel.append("<button class='answer-button' id='button' data-name='" + questions[this.currentQuestion].answers[i]
+      + "'>" + questions[this.currentQuestion].answers[i] + "</button>");
+    }
+  },
+
+  nextQuestion: function() {
+    game.counter = countStartNumber;
+    $("#counter-number").text(game.counter);
+    game.currentQuestion++;
+    game.loadQuestion();
+  },
+
+  timeUp: function() {
+
+    clearInterval(timer);
+
+    $("#counter-number").html(game.counter);
+
+    panel.html("<h2 class='outOfTime'>Out of Time!</h2>");
+    panel.append("<h3 class='correct'>CORRECT ANSWER IS: <span id='answer'>" + questions[this.currentQuestion].correctAnswer) + "</span> </h3>";
+    panel.append("<img src='" + questions[this.currentQuestion].image + "' />");
+
+    if (game.currentQuestion === questions.length - 1) {
+      setTimeout(game.results, 3 * 1000);
+    }
+    else {
+      setTimeout(game.nextQuestion, 3 * 1000);
+    }
+  },
+
+  results: function() {
+
+    clearInterval(timer);
+
+    panel.html("<h2 class='correct'> QUIZ RESULTS: </h2>");
+
+    $("#counter-number").text(game.counter);
+
+    panel.append("<h3 class='results'>Correct Answers: " + game.correct + "</h3>");
+    panel.append("<h3 class='results'>Incorrect Answers: " + game.incorrect + "</h3>");
+    panel.append("<h3 class='results'>Unanswered: " + (questions.length - (game.incorrect + game.correct)) + "</h3>");
+    panel.append("<br><button id='start-over'>Start Over?</button>");
+  },
+
+  clicked: function(e) {
+    clearInterval(timer);
+    if ($(e.target).attr("data-name") === questions[this.currentQuestion].correctAnswer) {
+      this.answeredCorrectly();
+    }
+    else {
+      this.answeredIncorrectly();
+    }
+  },
+
+  answeredIncorrectly: function() {
+
+    game.incorrect++;
+
+    clearInterval(timer);
+
+    panel.html("<h2 class='correct'>WRONG!!</h2><br>");
+    panel.append("<h3 class='correct'>CORRECT ANSWER IS: <span id='answer'>" + questions[game.currentQuestion].correctAnswer + "</span> </h3>");
+    panel.append("<img src='" + questions[game.currentQuestion].image + "' />");
+
+    if (game.currentQuestion === questions.length - 1) {
+      setTimeout(game.results, 3 * 1000);
+    }
+    else {
+      setTimeout(game.nextQuestion, 3 * 1000);
+    }
+  },
+
+  answeredCorrectly: function() {
+
+    clearInterval(timer);
+
+    game.correct++;
+
+    panel.html("<h2 class='correct'>Correct!</h2> <br>");
+    panel.append("<img src='" + questions[game.currentQuestion].image + "' />");
+
+    if (game.currentQuestion === questions.length - 1) {
+      setTimeout(game.results, 3 * 1000);
+    }
+    else {
+      setTimeout(game.nextQuestion, 3 * 1000);
+    }
+  },
+
+  reset: function() {
+    this.currentQuestion = 0;
+    this.counter = countStartNumber;
+    this.correct = 0;
+    this.incorrect = 0;
+    this.loadQuestion();
+  }
 };
 
-function counter() {
-    timer--;
-    $("#timer").html("<h2>" + timer + "<h2>");
-    if (timer <= 0) {
-        console.log("YOU ARE THE WORST!!");
-        checkAnswer();
-    }
-}
+// CLICK EVENTS
 
-function start() {
-    time = setInterval(counter, 1000);
-    $("#start").remove();
-    $("#timer").append("<h2> About 120 seconds Left</h2>");
-    quiz();
-}
+$(document).on("click", "#start-over", function() {
+  game.reset();
+});
 
+$(document).on("click", ".answer-button", function(e) {
+  game.clicked(e);
+});
 
-//HOW CAN I GET THE checked value of question 0 and compare it with the answer in the array??? 
-function checkAnswer() {
-//I SWEAR I had this working .... WTF....................................
-    var answerChoice0 = $("input[name='question0']:checked").val();
-    console.log(answerChoice0);
-    if (answerChoice0 == answers[0]) {
-        rightAnswer++;
-    } else {
-        wrongAnswer++;
-    };
-    console.log(answerChoice0);
-    console.log(answers[0]);
-
-    var answerChoice1 = $("input[name='question1']:checked").val();
-    if(answerChoice1 == answers[1]) {
-        rightAnswer++;
-    } else {
-        wrongAnswer++;
-    };
-
-    var answerChoice2 = $("input[name='question2']:checked").val();
-    if(answerChoice2 == answers[2]) {
-        rightAnswer++;
-    } else {
-        wrongAnswer++;
-    };
-
-    var answerChoice3 = $("input[name='question3']:checked").val();
-    if(answerChoice3 == answers[3]) {
-        rightAnswer++;
-    } else {
-        wrongAnswer++;
-    };
-
-    var answerChoice4 = $("input[name='question4']:checked").val();
-    if(answerChoice4 == answers[4]) {
-        rightAnswer++;
-    } else {
-        wrongAnswer++;
-    };
-
-    var answerChoice5 = $("input[name='question5']:checked").val();
-    if(answerChoice5 == answers[5]) {
-        rightAnswer++;
-    } else {
-        wrongAnswer++;
-    };
-
-    var answerChoice6 = $("input[name='question6']:checked").val();
-    if(answerChoice6 == answers[6]) {
-        rightAnswer++;
-    } else {
-        wrongAnswer++;
-    };
-
-    var answerChoice7 = $("input[name='question7']:checked").val();
-    if(answerChoice7 == answers[7]) {
-        rightAnswer++;
-    } else {
-        wrongAnswer++;
-    };
-}
-
-function done() {
-    $("button").on("click", function () {
-        clearInterval(time);
-        $("#quizBox").html("<h2> Correct : " + rightAnswer + "</h2>");
-        $("#quizBox").append("<h2> Incorrect : " + wrongAnswer + "</h2>");
-    })
-}
-
-
-
-
-
-
-
-//Main Process- click start and set functions to run in order 
-$("#start").on("click", function () {
-
-    start();
-    checkAnswer();
-    done();
-
+$(document).on("click", "#start", function() {
+  $("#sub-wrapper").prepend("<h2 class='timeRemaining'>Time Remaining: <br> <span id='counter-number'>30</span> Seconds</h2>");
+  game.loadQuestion();
 });
